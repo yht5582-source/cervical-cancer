@@ -42,16 +42,29 @@ function renderNhi(){
   const d=Object.fromEntries(new FormData(nhiForm));
   $('#local-field').hidden=d.setting!=='recurrent';
   const r=CC.nhi(d);
-  $('#nhi-result').innerHTML=r.rows.map(x=>`<div class="nhi-row st-${x.status}"><b>${esc(x.drug)}<span class="badge">${ST[x.status]}</span></b><span class="clause">${x.clause==='—'?'第九節無條文':'條文 '+esc(x.clause)}</span><p>${esc(x.text)}</p></div>`).join('');
+  $('#nhi-result').innerHTML=r.rows.map(x=>`<div class="nhi-row st-${x.status}"><div class="nhi-head"><b>${esc(x.drug)}</b><span class="badge">${ST[x.status]}</span><span class="clause">${x.clause==='—'?'第九節無條文':'條文 '+esc(x.clause)}</span></div><p>${esc(x.text)}</p></div>`).join('');
+  const n={};r.rows.forEach(x=>n[x.status]=(n[x.status]||0)+1);
+  $('#nhi-sum').innerHTML=Object.keys(ST).filter(k=>n[k]).map(k=>`<span class="st-${k}"><i></i>${ST[k]} <b>${n[k]}</b></span>`).join('');
   $('#nhi-notes').innerHTML=r.notes.map(n=>`<p>${esc(n)}</p>`).join('');
 }
 nhiForm.addEventListener('change',renderNhi);
 renderNhi();
 
-// 目前所在段落的導覽高亮
+// 目前所在段落的導覽高亮與閱讀進度
 const navLinks=[...document.querySelectorAll('nav a')];
-const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting)navLinks.forEach(a=>a.classList.toggle('active',a.hash==='#'+en.target.id));}),{rootMargin:'-45% 0px -50% 0px'});
-navLinks.forEach(a=>{const s=document.querySelector(a.hash);if(s)io.observe(s);});
+const navSecs=navLinks.map(a=>document.querySelector(a.hash));
+let ticking=false;
+function onScroll(){
+  ticking=false;
+  const y=innerHeight*.35;let cur=-1;
+  navSecs.forEach((s,i)=>{if(s&&s.getBoundingClientRect().top<=y)cur=i;});
+  navLinks.forEach((a,i)=>a.classList.toggle('active',i===cur));
+  const max=document.documentElement.scrollHeight-innerHeight;
+  $('#scroll-bar').style.width=(max>0?scrollY/max*100:0)+'%';
+}
+addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(onScroll);}},{passive:true});
+addEventListener('resize',onScroll);
+onScroll();
 
 function shuffle(n){const a=[...Array(n).keys()];for(let i=n-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
@@ -61,6 +74,7 @@ function renderSet(items,target,kind){
   const score=isCase?null:$('#quiz-score');
   const updateScore=()=>{
     if(!score)return;
+    score.classList.toggle('done',answered===items.length);
     score.textContent=answered===items.length?`完成！得分 ${correct} / ${items.length}`:answered?`得分 ${correct} / ${answered}（共 ${items.length} 題）`:`共 ${items.length} 題，首次作答計分`;
     $('#quiz-bar').style.width=(answered/items.length*100)+'%';
   };
