@@ -80,8 +80,9 @@ test('every input combination returns content',()=>{
 });
 
 test('case and quiz banks are well-formed',()=>{
-  assert.equal(cases.length,6);assert.equal(quiz.length,10);
-  for(const x of [...cases,...quiz]){
+  const {quizAdvanced}=globalThis.CC;
+  assert.equal(cases.length,6);assert.equal(quiz.length,10);assert.equal(quizAdvanced.length,10);
+  for(const x of [...cases,...quiz,...quizAdvanced]){
     assert.equal(x.options.length,3);
     assert.ok(x.answer>=0&&x.answer<3);
     assert.ok(x.explain);

@@ -126,3 +126,4 @@ footer{background:var(--navy);color:#fff;padding:30px 6vw;display:flex;justify-c
 .result .tw b{color:#8ccfb6}
 @media(max-width:900px){.nhi-grid{grid-template-columns:1fr}}
 @media(max-width:560px){.nhi-row{grid-template-columns:1fr}.nhi-row p{grid-column:1;grid-row:auto}}
+.quiz-mode{margin:18px 0 4px}

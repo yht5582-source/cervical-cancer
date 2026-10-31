@@ -83,5 +83,7 @@ function renderSet(items,target,kind){
 
 renderPath();
 renderSet(CC.cases,'#case-list','病例');
-renderSet(CC.quiz,'#quiz-list','考題');
-$('#reset-quiz').addEventListener('click',()=>{renderSet(CC.quiz,'#quiz-list','考題');$('#quiz').scrollIntoView({behavior:'smooth'});});
+const quizSet=()=>document.querySelector('input[name="quiz-mode"]:checked').value==='advanced'?CC.quizAdvanced:CC.quiz;
+renderSet(quizSet(),'#quiz-list','考題');
+document.querySelectorAll('input[name="quiz-mode"]').forEach(r=>r.addEventListener('change',()=>renderSet(quizSet(),'#quiz-list','考題')));
+$('#reset-quiz').addEventListener('click',()=>{renderSet(quizSet(),'#quiz-list','考題');$('#quiz').scrollIntoView({behavior:'smooth'});});

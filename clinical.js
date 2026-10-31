@@ -107,6 +107,19 @@ const quiz=[
   {q:'早期手術中冰凍切片發現淋巴結轉移，應如何？',options:['中止根治性子宮切除，改行根治性放化療','照常完成子宮切除再加放療','只切除淋巴結即可'],answer:0,explain:'ESGO 2023：避免根治手術合併放療，術中淋巴結陽性應轉為根治性放化療。'}
 ];
 
+const quizAdvanced=[
+  {q:'錐切確診 IA1、切緣陰性但 LVSI 陽性，淋巴結如何處理？',options:['可考慮前哨淋巴結切片，不需額外骨盆淋巴結廓清','必須做系統性骨盆淋巴結廓清加主動脈旁廓清','LVSI 不影響處置，任何淋巴結評估都不需要'],answer:0,explain:'ESGO 2023：IA1 LVSI 陰性不需淋巴結分期；LVSI 陽性可考慮，且建議以前哨淋巴結（不加 PLND）進行。'},
+  {q:'根治性子宮切除後最終病理，何者屬「高風險」而應輔助放化療？',options:['子宮旁侵犯','1.5 cm 腫瘤合併 LVSI，切緣與淋巴結陰性','3 cm 腫瘤、淺層間質侵犯、無 LVSI'],answer:0,explain:'高風險：淋巴結轉移（含微轉移）、手術切緣陽性、子宮旁侵犯 → 輔助放化療。腫瘤大小、LVSI、間質侵襲深度的組合屬中風險，考慮輔助放療或觀察。'},
+  {q:'IB1 病人希望接受微創根治性子宮切除，ESGO 2023 的前提為何？',options:['低風險（<2 cm 且錐切後切緣乾淨）並在符合品質標準的高量中心，充分說明證據後','任何 IB 期只要病人偏好即可','腫瘤 ≥4 cm 才能以微創降低併發症'],answer:0,explain:'LACC 試驗後，開腹為根治性子宮切除標準；微創僅限 <2 cm 且錐切切緣乾淨的低風險腫瘤、高量中心並經知情討論。'},
+  {q:'局部晚期病人影像顯示一顆總髂（common iliac）淋巴結陽性，主動脈旁影像陰性，照射範圍應？',options:['應納入預防性主動脈旁照射','只照骨盆，主動脈旁陰性就不需要','先手術摘除所有腫大淋巴結再決定'],answer:0,explain:'ESGO 2023：影像上即使只有一顆 level 2（總髂）以上淋巴結陽性，都應給予預防性主動脈旁照射；不建議放化療前常規切除大型淋巴結。'},
+  {q:'根治性同步放化療加近接治療的總治療時間目標？',options:['不超過 7 週','不超過 12 週','無時間限制，以毒性為準'],answer:0,explain:'ESGO 2023：外照射加 IGBT 的總治療時間應以 ≤7 週為目標；延長會降低局部控制。'},
+  {q:'根治性放化療加近接治療結束 3–6 個月後仍有局部殘存腫瘤，無區域或遠端病灶，下一步？',options:['轉介專責中心評估救援手術的必要性與可行性','常規補做單純子宮切除','直接給 6 個療程輔助化療'],answer:0,explain:'放化療後不建議常規補做子宮切除或輔助化療；持續性局部腫瘤應由專責中心評估救援手術（如骨盆臟器切除）。'},
+  {q:'懷孕合併子宮頸癌，ESGO 建議的生產方式？',options:['剖腹生產','陰道生產','依孕婦偏好，兩者風險相同'],answer:0,explain:'ESGO 2023：懷孕期子宮頸癌建議剖腹生產；孕期化療可於 14 週後考慮，並在具經驗中心處置。'},
+  {q:'一線鉑類化療後進展、未曾使用免疫治療的復發病人，ESGO 2023 建議？',options:['Cemiplimab，不論 PD-L1 狀態','只有 CPS ≥10 才能用免疫治療','只能最佳支持療法'],answer:0,explain:'ESGO 2023：一線鉑類後進展且未用過免疫治療者，應提供 cemiplimab，不論 PD-L1；國內需另核對核准與自費。'},
+  {q:'台灣健保：復發性子宮頸癌、無法接受含鉑治療，bevacizumab 可給付的併用處方？',options:['Paclitaxel + topotecan','Carboplatin + paclitaxel','Pembrolizumab 單用'],answer:0,explain:'藥品給付規定 9.37.4(2)：無法接受含鉑治療者，bevacizumab 與 paclitaxel 及 topotecan 併用；需事前審查，每次 15 週。'},
+  {q:'台灣健保：子宮頸癌病人使用 pembrolizumab（合併放化療或復發轉移一線）的給付狀態？',options:['9.69 給付適應症未含子宮頸癌，需自費','PD-L1 CPS ≥1 即可給付','合併放化療給付、轉移時不給付'],answer:0,explain:'9.69 免疫檢查點抑制劑的給付適應症目前未包含子宮頸癌（115.9.22 版），KEYNOTE-A18 與 KEYNOTE-826 用法皆需自費。'}
+];
+
 /* 台灣健保：全民健康保險藥品給付規定 第九節 抗癌瘤藥物（115.9.22 更新版）逐條比對 */
 const NHI_VERSION='第九節 抗癌瘤藥物（115.9.22 更新）';
 function nhi(input){
@@ -144,5 +157,5 @@ function nhiSummary(code){
   return '';
 }
 
-root.CC={STAGES,pathway,cases,quiz,nhi,nhiSummary,NHI_VERSION};
+root.CC={STAGES,pathway,cases,quiz,quizAdvanced,nhi,nhiSummary,NHI_VERSION};
 })(typeof globalThis!=='undefined'?globalThis:this);
