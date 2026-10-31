@@ -21,6 +21,7 @@ FIGO 2018 分期、診斷與治療方向的繁體中文互動教學網站。包�
 ## 結構與測試
 
 - `clinical.js`：分流引擎 `CC.pathway()` 與病例／考題題庫（純函式，classic script，file:// 可用）
-- `app.js`：畫面互動（即時更新、選項隨機、計分）
+- `app.js`：畫面互動（快速情境、分期階梯帶入、即時更新、複製摘要、選項隨機、計分與進度）
+- `style.css`：色彩變數，支援深色模式與手機版
 - 測試：`node --test tests/clinical.test.cjs`
 
