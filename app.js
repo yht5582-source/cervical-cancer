@@ -22,8 +22,9 @@ function renderPath(){
   const d=readForm();syncFields(d);
   const r=CC.pathway(d);
   result.className='result tone-'+(TONE[r.code]||'advanced');
-  lastText=[`【子宮頸癌教學分流】${r.stageLabel}`,r.title,...r.points.map(x=>'・'+x),...r.warnings.map(w=>'⚠ '+w),'（教學用途，依 ESGO/ESTRO/ESP 2023 與 FDA 核准範圍整理）'].join('\n');
-  result.innerHTML=`<p class="eyebrow">TEACHING PATHWAY · ${esc(r.stageLabel)}</p><h3>${esc(r.title)}</h3><ul>${r.points.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>${r.warnings.map(w=>`<p class="warn">⚠ ${esc(w)}</p>`).join('')}<p class="small">依 ESGO/ESTRO/ESP 2023 與 FDA 核准範圍整理；具體處置請以原始指引與多專科會議核對。</p>`;
+  const tw=CC.nhiSummary(r.code);
+  lastText=[`【子宮頸癌教學分流】${r.stageLabel}`,r.title,...r.points.map(x=>'・'+x),...r.warnings.map(w=>'⚠ '+w),...(tw?['台灣規範：'+tw]:[]),'（教學用途，依 ESGO/ESTRO/ESP 2023 與 FDA 核准範圍整理）'].join('\n');
+  result.innerHTML=`<p class="eyebrow">TEACHING PATHWAY · ${esc(r.stageLabel)}</p><h3>${esc(r.title)}</h3><ul>${r.points.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>${r.warnings.map(w=>`<p class="warn">⚠ ${esc(w)}</p>`).join('')}${tw?`<p class="tw"><b>台灣規範</b>　${esc(tw)} <a href="#nhi">逐條檢核 →</a></p>`:''}<p class="small">依 ESGO/ESTRO/ESP 2023 與 FDA 核准範圍整理；具體處置請以原始指引與多專科會議核對。</p>`;
 }
 form.addEventListener('change',renderPath);
 form.addEventListener('submit',e=>{e.preventDefault();renderPath();});
@@ -33,6 +34,19 @@ $('#copy-result').addEventListener('click',async e=>{
   try{await navigator.clipboard.writeText(lastText);b.textContent='已複製 ✓';}catch{b.textContent='無法複製';}
   setTimeout(()=>b.textContent='複製摘要',1600);
 });
+
+// 台灣健保給付檢核
+const nhiForm=$('#nhi-form');
+const ST={covered:'條文明列',open:'無限制條文',check:'需確認',no:'未給付',none:'無規定',na:'不適用'};
+function renderNhi(){
+  const d=Object.fromEntries(new FormData(nhiForm));
+  $('#local-field').hidden=d.setting!=='recurrent';
+  const r=CC.nhi(d);
+  $('#nhi-result').innerHTML=r.rows.map(x=>`<div class="nhi-row st-${x.status}"><b>${esc(x.drug)}<span class="badge">${ST[x.status]}</span></b><span class="clause">${x.clause==='—'?'第九節無條文':'條文 '+esc(x.clause)}</span><p>${esc(x.text)}</p></div>`).join('');
+  $('#nhi-notes').innerHTML=r.notes.map(n=>`<p>${esc(n)}</p>`).join('');
+}
+nhiForm.addEventListener('change',renderNhi);
+renderNhi();
 
 // 目前所在段落的導覽高亮
 const navLinks=[...document.querySelectorAll('nav a')];

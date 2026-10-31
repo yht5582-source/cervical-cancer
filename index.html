@@ -1,6 +1,6 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="子宮頸癌 FIGO 2018 分期、診斷與治療教學工具：ESGO/ESTRO/ESP 2023 分流、病例與測驗"><meta name="theme-color" content="#173c4e"><title>子宮頸癌｜臨床決策教學</title><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23173c4e%22/%3E%3Ctext x=%2250%22 y=%2272%22 font-size=%2266%22 text-anchor=%22middle%22 font-family=%22Georgia%22 fill=%22%23e7b080%22%3EC%3C/text%3E%3C/svg%3E"><link rel="stylesheet" href="style.css?v=1.2"></head><body>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="子宮頸癌 FIGO 2018 分期、診斷與治療教學工具：ESGO/ESTRO/ESP 2023 分流、病例與測驗"><meta name="theme-color" content="#173c4e"><title>子宮頸癌｜臨床決策教學</title><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23173c4e%22/%3E%3Ctext x=%2250%22 y=%2272%22 font-size=%2266%22 text-anchor=%22middle%22 font-family=%22Georgia%22 fill=%22%23e7b080%22%3EC%3C/text%3E%3C/svg%3E"><link rel="stylesheet" href="style.css?v=1.3"></head><body>
 <a class="skip" href="#main">跳到主要內容</a>
-<header><a class="brand" href="#top">CERVIX <span>ONCOLOGY</span></a><nav aria-label="主選單"><a href="#guide">分期</a><a href="#navigator">分流</a><a href="#cases">病例</a><a href="#quiz">考題</a><a href="#sources">來源</a></nav></header>
+<header><a class="brand" href="#top">CERVIX <span>ONCOLOGY</span></a><nav aria-label="主選單"><a href="#guide">分期</a><a href="#navigator">分流</a><a href="#nhi">健保</a><a href="#cases">病例</a><a href="#quiz">考題</a><a href="#sources">來源</a></nav></header>
 <main id="main">
 <section class="hero" id="top"><div class="hero-copy"><p class="eyebrow">FIGO 2018 · ESGO/ESTRO/ESP 2023 · FDA</p><h1>從確診與分期，<br><em>走向合適的治療。</em></h1><p class="lead">以互動路徑練習子宮頸癌的診斷、局部治療與復發轉移處置。分期是溝通的起點，病理、影像、淋巴結與生育意願共同決定下一步。</p><div class="hero-actions"><a class="cta" href="#navigator">開始教學分流 →</a><a class="cta ghost-dark" href="#quiz">直接做測驗</a></div></div>
 <div class="hero-panel" aria-label="常見情境快速開啟"><p class="panel-title">快速情境</p>
@@ -52,18 +52,33 @@
 <label><input type="checkbox" name="pregnant"><span>目前懷孕</span></label></div></fieldset>
 <div class="form-actions"><button type="reset" class="ghost">重設</button></div></form>
 <div class="result-col"><div id="result" class="result" aria-live="polite"></div><button type="button" id="copy-result" class="ghost copy">複製摘要</button></div></div></div></section>
-<section id="cases" class="section"><p class="eyebrow">03 / CASE LIBRARY</p><h2>六個示範病例</h2><div id="case-list" class="case-grid"></div></section>
-<section id="quiz" class="section quiz"><div class="wrap narrow"><p class="eyebrow">04 / KNOWLEDGE CHECK</p><h2>10 題臨床測驗</h2><p class="muted">選擇答案後立即查看解析；題目為虛構教學情境，選項順序每次隨機。</p>
+<section id="nhi" class="section nhi"><p class="eyebrow">03 / TAIWAN NHI</p><h2>台灣健保給付檢核</h2><p class="muted">逐條比對《全民健康保險藥品給付規定》第九節 抗癌瘤藥物（115.9.22 更新）。綠色為條文明列，黃色需申報前確認，紅色為未給付。實際以健保署最新公告及事前審查結果為準。</p>
+<div class="nhi-grid"><form id="nhi-form">
+<fieldset><legend>治療階段</legend><div class="chips">
+<label><input type="radio" name="setting" value="recurrent" checked><span>持續性／復發性／轉移性</span></label>
+<label><input type="radio" name="setting" value="curative"><span>根治性同步放化療</span></label></div></fieldset>
+<fieldset><legend>可接受含鉑治療</legend><div class="chips">
+<label><input type="radio" name="platinum" value="yes" checked><span>可以</span></label>
+<label><input type="radio" name="platinum" value="no"><span>不可（禁忌／不耐受）</span></label></div></fieldset>
+<fieldset><legend>腎功能</legend><div class="chips">
+<label><input type="radio" name="renal" value="no" checked><span>CCr ≥60</span></label>
+<label><input type="radio" name="renal" value="yes"><span>CCr &lt;60 或曾腎切除</span></label></div></fieldset>
+<fieldset id="local-field"><legend>仍適合手術或放射治療</legend><div class="chips">
+<label><input type="radio" name="localTx" value="no" checked><span>不適合</span></label>
+<label><input type="radio" name="localTx" value="yes"><span>仍可局部治療</span></label></div></fieldset>
+</form><div><div id="nhi-result" class="nhi-table" aria-live="polite"></div><div id="nhi-notes"></div></div></div></section>
+<section id="cases" class="section"><p class="eyebrow">04 / CASE LIBRARY</p><h2>六個示範病例</h2><div id="case-list" class="case-grid"></div></section>
+<section id="quiz" class="section quiz"><div class="wrap narrow"><p class="eyebrow">05 / KNOWLEDGE CHECK</p><h2>10 題臨床測驗</h2><p class="muted">選擇答案後立即查看解析；題目為虛構教學情境，選項順序每次隨機。</p>
 <div class="progress" aria-hidden="true"><span id="quiz-bar"></span></div><p id="quiz-score" class="score" aria-live="polite"></p>
 <div id="quiz-list"></div><button id="reset-quiz" class="secondary">重做考題</button></div></section>
-<section id="sources" class="section sources"><p class="eyebrow">05 / SOURCE DESK</p><h2>原始指引與證據</h2><ul>
+<section id="sources" class="section sources"><p class="eyebrow">06 / SOURCE DESK</p><h2>原始指引與證據</h2><ul>
 <li><span class="kind">指引</span><a href="https://www.esgo.org/media/2019/03/Pocket-Guidelines_Cervical-cancer_June2023.pdf" target="_blank" rel="noopener">ESGO/ESTRO/ESP 2023 子宮頸癌管理指引 ↗</a></li>
 <li><span class="kind">指引</span><a href="https://www.cancer.gov/types/cervical/hp/cervical-treatment-pdq" target="_blank" rel="noopener">NCI PDQ：Cervical Cancer Treatment ↗</a></li>
 <li><span class="kind">分期</span><a href="https://www.ncbi.nlm.nih.gov/books/NBK606467/table/T5.10.5/" target="_blank" rel="noopener">FIGO 2018 分期表 ↗</a></li>
 <li><span class="kind">FDA</span><a href="https://www.fda.gov/drugs/resources-information-approved-drugs/fda-approves-pembrolizumab-chemoradiotherapy-figo-2014-stage-iii-iva-cervical-cancer" target="_blank" rel="noopener">Pembrolizumab 合併放化療核准範圍 ↗</a></li>
 <li><span class="kind">試驗</span><a href="https://www.cancer.gov/news-events/cancer-currents-blog/2024/cervical-cancer-simple-hysterectomy" target="_blank" rel="noopener">NCI：SHAPE 低風險早期病灶手術研究 ↗</a></li>
 <li><span class="kind">FDA</span><a href="https://www.fda.gov/drugs/resources-information-approved-drugs/fda-approves-tisotumab-vedotin-tftv-recurrent-or-metastatic-cervical-cancer" target="_blank" rel="noopener">Tisotumab vedotin 復發／轉移核准 ↗</a></li>
-<li><span class="kind">試驗</span><a href="https://doi.org/10.1016/S0140-6736(24)01438-7" target="_blank" rel="noopener">Lancet 2024：INTERLACE 誘導化療試驗 ↗</a></li></ul>
-<p>資料核對：2026-10-31。FIGO 2018 與藥物試驗使用的 FIGO 2014 期別不可逕行互換；本頁不提供台灣健保給付判定。</p></section></main>
-<footer>子宮頸癌｜臨床決策教學 <span>教育用途 · v1.2 · 2026-10-31</span></footer>
-<script src="clinical.js?v=1.2" defer></script><script src="app.js?v=1.2" defer></script></body></html>
+<li><span class="kind">健保</span><a href="https://www.nhi.gov.tw/ch/cp-7593-ad2a9-3397-1.html" target="_blank" rel="noopener">健保署：藥品給付規定（第九節 抗癌瘤藥物，115.9.22）↗</a></li><li><span class="kind">試驗</span><a href="https://doi.org/10.1016/S0140-6736(24)01438-7" target="_blank" rel="noopener">Lancet 2024：INTERLACE 誘導化療試驗 ↗</a></li></ul>
+<p>資料核對：2026-10-31。FIGO 2018 與藥物試驗使用的 FIGO 2014 期別不可逕行互換；台灣健保欄位依第九節條文整理，不代表事前審查結果。</p></section></main>
+<footer>子宮頸癌｜臨床決策教學 <span>教育用途 · v1.3 · 2026-10-31</span></footer>
+<script src="clinical.js?v=1.3" defer></script><script src="app.js?v=1.3" defer></script></body></html>

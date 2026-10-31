@@ -107,5 +107,42 @@ const quiz=[
   {q:'早期手術中冰凍切片發現淋巴結轉移，應如何？',options:['中止根治性子宮切除，改行根治性放化療','照常完成子宮切除再加放療','只切除淋巴結即可'],answer:0,explain:'ESGO 2023：避免根治手術合併放療，術中淋巴結陽性應轉為根治性放化療。'}
 ];
 
-root.CC={STAGES,pathway,cases,quiz};
+/* 台灣健保：全民健康保險藥品給付規定 第九節 抗癌瘤藥物（115.9.22 更新版）逐條比對 */
+const NHI_VERSION='第九節 抗癌瘤藥物（115.9.22 更新）';
+function nhi(input){
+  const d=Object.assign({setting:'recurrent',platinum:'yes',renal:'no',localTx:'no'},input||{});
+  const rec=d.setting==='recurrent', plat=d.platinum==='yes', renal=d.renal==='yes', local=d.localTx==='yes';
+  const rows=[];
+  rows.push({drug:'Cisplatin',clause:'—',status:plat?'open':'na',
+    text:plat?'第九節無限制條文，依許可證適應症使用。':'病人無法接受含鉑治療。'});
+  rows.push({drug:'Carboplatin',clause:'9.2',status:renal?'covered':'no',
+    text:renal?'符合 9.2 第 2 款：腎功能不佳（CCr <60）或曾作單側以上腎切除之惡性腫瘤患者。':'9.2 限卵巢癌、CCr <60 或曾腎切除者（及特定肺癌／乳癌併用）；子宮頸癌腎功能正常者不在給付範圍。'});
+  rows.push({drug:'Paclitaxel',clause:'9.5.1／9.37.4',status:rec?'check':'no',
+    text:rec?'9.5.1 給付癌別列卵巢癌、非小細胞肺癌、乳癌、卡波西氏肉瘤，未列子宮頸癌；子宮頸癌僅出現在 9.37.4 bevacizumab 併用處方。申報前請與院內藥劑部／健保窗口確認。':'9.5.1 未列子宮頸癌；根治性放化療前的誘導化療（INTERLACE）不在條文內。'});
+  if(rec){
+    rows.push({drug:'Bevacizumab',clause:'9.37.4',status:'covered',
+      text:(plat?'9.37.4(1)：與 cisplatin 及 paclitaxel 併用於持續性、復發性或轉移性子宮頸癌。':'9.37.4(2)：無法接受含鉑治療者，與 paclitaxel 及 topotecan 併用於持續性、復發性或轉移性子宮頸癌。')+'需事前審查，每次以 15 週為限；續用須檢附影像等客觀證據證實無惡化。用藥前評估腸胃道／泌尿道瘻管與出血風險。'});
+    rows.push({drug:'Topotecan 注射劑',clause:'9.16.1',status:plat&&!local?'covered':plat?'no':'check',
+      text:plat&&!local?'9.16.1 第 2 款：與 cisplatin 併用，用於經組織學確定之第 IV-B 期、復發性或持續性子宮頸癌，且不適合手術及（或）放射治療者。'
+        :plat?'9.16.1 第 2 款要求「不適合以外科手術及（或）放射療法治療」；仍可局部治療者不符合。'
+        :'9.16.1 第 2 款限與 cisplatin 併用；無法用鉑類時，topotecan 僅在 9.37.4(2) bevacizumab 三合一處方中出現，申報前請確認。'});
+  }else{
+    rows.push({drug:'Bevacizumab',clause:'9.37.4',status:'no',text:'9.37.4 限持續性、復發性或轉移性子宮頸癌；根治性放化療階段不給付。'});
+  }
+  rows.push({drug:'Pembrolizumab／cemiplimab',clause:'9.69',status:'no',
+    text:'9.69 免疫檢查點抑制劑的給付適應症未包含子宮頸癌：'+(rec?'復發／轉移一線（KEYNOTE-826）與二線 cemiplimab':'合併放化療（KEYNOTE-A18）')+'皆需自費。'});
+  if(rec) rows.push({drug:'Tisotumab vedotin',clause:'—',status:'none',text:'第九節無此藥給付規定，需自費或專案，並確認國內可取得性。'});
+  const notes=[];
+  if(rec&&!plat) notes.push('無法使用鉑類：可給付組合為 bevacizumab + paclitaxel + topotecan（9.37.4(2)）。');
+  if(rec&&plat) notes.push('一線常見可給付組合：cisplatin + paclitaxel ± bevacizumab（bevacizumab 需事前審查）。');
+  if(!rec) notes.push('根治性放化療：每週 cisplatin 無限制條文；腎功能不佳改 carboplatin 時符合 9.2 第 2 款。');
+  return {version:NHI_VERSION,rows,notes};
+}
+function nhiSummary(code){
+  if(code==='metastatic') return '健保（'+NHI_VERSION+'）：bevacizumab 9.37.4 需事前審查；pembrolizumab／cemiplimab（9.69）未給付子宮頸癌，需自費。';
+  if(code==='locally'||code==='iiic1'||code==='iiic2') return '健保（'+NHI_VERSION+'）：pembrolizumab 合併放化療未給付（9.69）；carboplatin 限 CCr <60 或腎切除（9.2）。';
+  return '';
+}
+
+root.CC={STAGES,pathway,cases,quiz,nhi,nhiSummary,NHI_VERSION};
 })(typeof globalThis!=='undefined'?globalThis:this);

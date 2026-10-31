@@ -14,13 +14,14 @@ FIGO 2018 分期、診斷與治療方向的繁體中文互動教學網站。包�
 - [FDA pembrolizumab with chemoradiotherapy](https://www.fda.gov/drugs/resources-information-approved-drugs/fda-approves-pembrolizumab-chemoradiotherapy-figo-2014-stage-iii-iva-cervical-cancer)
 - [NCI SHAPE trial commentary](https://www.cancer.gov/news-events/cancer-currents-blog/2024/cervical-cancer-simple-hysterectomy)
 - [INTERLACE (Lancet 2024)](https://doi.org/10.1016/S0140-6736(24)01438-7)
+- [健保署 藥品給付規定 第九節 抗癌瘤藥物（115.9.22）](https://www.nhi.gov.tw/ch/cp-7593-ad2a9-3397-1.html)
 - [FDA tisotumab vedotin](https://www.fda.gov/drugs/resources-information-approved-drugs/fda-approves-tisotumab-vedotin-tftv-recurrent-or-metastatic-cervical-cancer)
 
 資料核對日期：2026-10-31。
 
 ## 結構與測試
 
-- `clinical.js`：分流引擎 `CC.pathway()` 與病例／考題題庫（純函式，classic script，file:// 可用）
+- `clinical.js`：分流引擎 `CC.pathway()`、健保檢核 `CC.nhi()` 與病例／考題題庫（純函式，classic script，file:// 可用）
 - `app.js`：畫面互動（快速情境、分期階梯帶入、即時更新、複製摘要、選項隨機、計分與進度）
 - `style.css`：色彩變數，支援深色模式與手機版
 - 測試：`node --test tests/clinical.test.cjs`

@@ -87,3 +87,42 @@ test('case and quiz banks are well-formed',()=>{
     assert.ok(x.explain);
   }
 });
+
+const {nhi,nhiSummary}=globalThis.CC;
+const row=(r,drug)=>r.rows.find(x=>x.drug.startsWith(drug));
+
+test('NHI recurrent, platinum OK: bev 9.37.4(1), topotecan only if no local therapy',()=>{
+  const r=nhi({setting:'recurrent',platinum:'yes',localTx:'no'});
+  assert.match(row(r,'Bevacizumab').text,/9\.37\.4\(1\)/);
+  assert.equal(row(r,'Bevacizumab').status,'covered');
+  assert.equal(row(r,'Topotecan').status,'covered');
+  assert.equal(nhi({setting:'recurrent',platinum:'yes',localTx:'yes'}).rows.find(x=>x.drug.startsWith('Topotecan')).status,'no');
+  assert.equal(row(r,'Pembrolizumab').status,'no');
+  assert.equal(row(r,'Paclitaxel').status,'check');
+});
+
+test('NHI recurrent, no platinum: bev 9.37.4(2) triplet',()=>{
+  const r=nhi({setting:'recurrent',platinum:'no'});
+  assert.match(row(r,'Bevacizumab').text,/9\.37\.4\(2\)/);
+  assert.equal(row(r,'Cisplatin').status,'na');
+  assert.equal(row(r,'Topotecan').status,'check');
+});
+
+test('NHI carboplatin only with renal impairment',()=>{
+  assert.equal(row(nhi({renal:'yes'}),'Carboplatin').status,'covered');
+  assert.equal(row(nhi({renal:'no'}),'Carboplatin').status,'no');
+});
+
+test('NHI curative CCRT: no bev, no ICI, no tisotumab row',()=>{
+  const r=nhi({setting:'curative'});
+  assert.equal(row(r,'Bevacizumab').status,'no');
+  assert.equal(row(r,'Pembrolizumab').status,'no');
+  assert.equal(row(r,'Tisotumab'),undefined);
+  assert.match(row(r,'Pembrolizumab').text,/KEYNOTE-A18/);
+});
+
+test('NHI summary only for advanced codes',()=>{
+  assert.match(nhiSummary('metastatic'),/9\.37\.4/);
+  assert.match(nhiSummary('iiic1'),/9\.69/);
+  assert.equal(nhiSummary('ib1'),'');
+});
