@@ -127,3 +127,49 @@ test('NHI summary only for advanced codes',()=>{
   assert.match(nhiSummary('iiic1'),/9\.69/);
   assert.equal(nhiSummary('ib1'),'');
 });
+
+const {demoCases,mindMap}=globalThis.CC;
+
+test('demo cases: eight, each preset reaches its expected engine route',()=>{
+  assert.equal(demoCases.length,8);
+  assert.equal(new Set(demoCases.map(c=>c.id)).size,8);
+  for(const c of demoCases){
+    assert.ok(c.stem&&c.steps.length>=4&&c.traps.length>=2,c.id);
+    assert.ok(c.steps.every(s=>s.q&&s.a&&s.src),c.id);
+    if(c.preset) assert.equal(pathway(c.preset).code,c.expect,c.id);
+    else assert.ok(c.engineNote,c.id);
+    if(c.nhi) for(const d of c.nhiDrugs) assert.ok(row(nhi(c.nhi),d),c.id+' '+d);
+  }
+});
+
+test('demo cases agree with the engine on their teaching points',()=>{
+  const by=id=>demoCases.find(c=>c.id===id);
+  assert.match(txt(pathway(by('fertility').preset)),/LVSI 陽性以根治性子宮頸切除為主/);
+  assert.match(txt(pathway(by('surgery').preset)),/輔助放化療/);
+  assert.equal(row(nhi(by('renal').nhi),'Carboplatin').status,'covered');
+  assert.equal(row(nhi(by('nodes').nhi),'Pembrolizumab').status,'no');
+  assert.match(txt(pathway(by('nodes').preset)),/FIGO 2014 III–IVA/);
+  assert.match(txt(pathway(by('pregnancy').preset)),/14 週後/);
+  assert.match(txt(pathway(by('pregnancy').preset)),/避免釓顯影劑與 PET-CT/);
+  const m=nhi(by('metastatic').nhi);
+  assert.equal(row(m,'Carboplatin').status,'covered');
+  assert.match(row(m,'Bevacizumab').text,/9\.37\.4\(1\)：與 cisplatin 及 paclitaxel/);
+  assert.equal(row(m,'Pembrolizumab').status,'no');
+  assert.match(txt(pathway(by('metastatic').preset)),/加 pembrolizumab/);
+});
+
+test('mind map: well-formed, presets valid and on the matching route',()=>{
+  assert.ok(mindMap.dx.length>=5&&mindMap.tx.length>=8);
+  const stages=Object.keys(globalThis.CC.STAGES);
+  for(const b of [...mindMap.dx,...mindMap.tx]){
+    assert.ok(b.t&&b.s&&b.l.length>=3,b.t);
+    for(const x of b.l){
+      assert.ok(x.k&&x.x,b.t);
+      if(x.src) assert.match(x.src,/^p\.\d/);
+      if(x.p){assert.ok(stages.includes(x.p.stage),x.k);assert.ok(pathway(x.p).points.length);}
+    }
+  }
+  const tx=t=>mindMap.tx.find(b=>b.t.startsWith(t)).l.find(x=>x.k);
+  assert.equal(pathway(tx('IIIC').p).code,'iiic1');
+  assert.ok(mindMap.tx.find(b=>b.tw).l.every(x=>x.tw));
+});

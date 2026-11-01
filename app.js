@@ -38,11 +38,12 @@ $('#copy-result').addEventListener('click',async e=>{
 // 台灣健保給付檢核
 const nhiForm=$('#nhi-form');
 const ST={covered:'條文明列',open:'無限制條文',check:'需確認',no:'未給付',none:'無規定',na:'不適用'};
+const nhiRow=x=>`<div class="nhi-row st-${x.status}"><div class="nhi-head"><b>${esc(x.drug)}</b><span class="badge">${ST[x.status]}</span><span class="clause">${x.clause==='—'?'第九節無條文':'條文 '+esc(x.clause)}</span></div><p>${esc(x.text)}</p></div>`;
 function renderNhi(){
   const d=Object.fromEntries(new FormData(nhiForm));
   $('#local-field').hidden=d.setting!=='recurrent';
   const r=CC.nhi(d);
-  $('#nhi-result').innerHTML=r.rows.map(x=>`<div class="nhi-row st-${x.status}"><div class="nhi-head"><b>${esc(x.drug)}</b><span class="badge">${ST[x.status]}</span><span class="clause">${x.clause==='—'?'第九節無條文':'條文 '+esc(x.clause)}</span></div><p>${esc(x.text)}</p></div>`).join('');
+  $('#nhi-result').innerHTML=r.rows.map(nhiRow).join('');
   const n={};r.rows.forEach(x=>n[x.status]=(n[x.status]||0)+1);
   $('#nhi-sum').innerHTML=Object.keys(ST).filter(k=>n[k]).map(k=>`<span class="st-${k}"><i></i>${ST[k]} <b>${n[k]}</b></span>`).join('');
   $('#nhi-notes').innerHTML=r.notes.map(n=>`<p>${esc(n)}</p>`).join('');
@@ -94,6 +95,65 @@ function renderSet(items,target,kind){
   });
   updateScore();
 }
+
+// 完整示範病例：分流與健保區塊即時取自引擎
+function renderDemo(i){
+  const c=CC.demoCases[i];
+  document.querySelectorAll('#demo-tabs button').forEach((b,j)=>{b.setAttribute('aria-selected',j===i);b.tabIndex=j===i?0:-1;});
+  const r=c.preset&&CC.pathway(c.preset);
+  const rows=c.nhi?CC.nhi(c.nhi).rows.filter(x=>c.nhiDrugs.some(d=>x.drug.startsWith(d))):[];
+  $('#demo-panel').innerHTML=`<small>病例 ${String(i+1).padStart(2,'0')} · ${esc(c.tag)}</small><h3>${esc(c.title)}</h3><p class="demo-stem">${esc(c.stem)}</p>
+  <ol class="demo-steps">${c.steps.map(s=>`<li><b>${esc(s.q)}</b><p>${esc(s.a)} <cite>${esc(s.src)}</cite></p></li>`).join('')}</ol>
+  ${r?`<div class="demo-engine tone-${TONE[r.code]||'advanced'}"><p class="demo-label">分流工具結果 · ${esc(r.title)}</p><ul>${r.points.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>${r.warnings.map(w=>`<p class="demo-warn">⚠ ${esc(w)}</p>`).join('')}</div>`:`<p class="demo-note">${esc(c.engineNote)}</p>`}
+  ${rows.length?`<p class="demo-label">台灣健保（${esc(CC.NHI_VERSION)}）</p>${rows.map(nhiRow).join('')}`:''}
+  <p class="demo-label">容易出錯</p><ul class="demo-traps">${c.traps.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>
+  <div class="demo-actions">${c.preset?'<button type="button" class="ghost" data-demo="path">帶入分流工具 →</button>':''}${c.nhi?'<button type="button" class="ghost" data-demo="nhi">帶入健保檢核 →</button>':''}</div>`;
+  $('#demo-panel').dataset.i=i;
+}
+$('#demo-tabs').innerHTML=CC.demoCases.map((c,i)=>`<button type="button" role="tab" data-i="${i}"><b>${esc(c.tag)}</b><span>${esc(c.title)}</span></button>`).join('');
+$('#demo-tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b)renderDemo(Number(b.dataset.i));});
+$('#demo-tabs').addEventListener('keydown',e=>{
+  const n=CC.demoCases.length,cur=Number($('#demo-panel').dataset.i);
+  const d={ArrowDown:1,ArrowRight:1,ArrowUp:-1,ArrowLeft:-1}[e.key];if(!d)return;
+  e.preventDefault();const i=(cur+d+n)%n;renderDemo(i);$('#demo-tabs').children[i].focus();
+});
+$('#demo-panel').addEventListener('click',e=>{
+  const b=e.target.closest('[data-demo]');if(!b)return;
+  const c=CC.demoCases[Number($('#demo-panel').dataset.i)];
+  if(b.dataset.demo==='path'){applyPreset(c.preset);return;}
+  for(const [k,v] of Object.entries(c.nhi))nhiForm.elements[k].value=v;
+  renderNhi();$('#nhi').scrollIntoView({behavior:'smooth'});
+});
+renderDemo(0);
+
+// 心智圖：分支預設收合，連線依實際位置繪製
+function mapBranch(b,side,i){
+  const leaf=x=>`<li><b>${esc(x.k)}</b>　${esc(x.x)}${x.src?` <cite>${esc(x.src)}</cite>`:''}${x.tw?' <span class="mm-tw">台灣健保</span>':''}${x.p?` <button type="button" class="mm-go" data-go='${esc(JSON.stringify(x.p))}'>帶入</button>`:''}</li>`;
+  return `<div class="mm-branch ${side}"><button type="button" class="mm-head" aria-expanded="false" aria-controls="mm-${side}${i}"><span class="mm-t">${esc(b.t)}</span><span class="mm-s">${esc(b.s)}</span></button><ul class="mm-leaves" id="mm-${side}${i}" hidden>${b.l.map(leaf).join('')}</ul></div>`;
+}
+function drawMap(){
+  const w=$('#mm'),svg=$('#mm-links');
+  if(getComputedStyle(svg).display==='none')return;
+  const W=w.getBoundingClientRect(),C=$('#mm-center').getBoundingClientRect();
+  svg.setAttribute('viewBox',`0 0 ${W.width} ${W.height}`);
+  svg.innerHTML=[...w.querySelectorAll('.mm-branch')].map(b=>{
+    const dx=b.classList.contains('dx'),r=b.querySelector('.mm-head').getBoundingClientRect();
+    const x1=(dx?C.left:C.right)-W.left,y1=C.top+C.height/2-W.top,x2=(dx?r.right:r.left)-W.left,y2=r.top+r.height/2-W.top,mx=(x1+x2)/2;
+    return `<path class="${dx?'dx':'tx'}" d="M${x1} ${y1} C${mx} ${y1} ${mx} ${y2} ${x2} ${y2}"/>`;
+  }).join('');
+}
+function setBranch(h,open){h.setAttribute('aria-expanded',open);document.getElementById(h.getAttribute('aria-controls')).hidden=!open;}
+$('#mm-dx').innerHTML='<h3 class="mm-col dx">診斷與評估</h3>'+CC.mindMap.dx.map((b,i)=>mapBranch(b,'dx',i)).join('');
+$('#mm-tx').innerHTML='<h3 class="mm-col tx">治療</h3>'+CC.mindMap.tx.map((b,i)=>mapBranch(b,'tx',i)).join('');
+$('#mm').addEventListener('click',e=>{
+  const go=e.target.closest('.mm-go');if(go){applyPreset(JSON.parse(go.dataset.go));return;}
+  const h=e.target.closest('.mm-head');if(h){setBranch(h,h.getAttribute('aria-expanded')!=='true');drawMap();}
+});
+const mmAll=open=>{document.querySelectorAll('#mm .mm-head').forEach(h=>setBranch(h,open));drawMap();};
+$('#mm-open').addEventListener('click',()=>mmAll(true));
+$('#mm-close').addEventListener('click',()=>mmAll(false));
+if(window.ResizeObserver)new ResizeObserver(drawMap).observe($('#mm'));else addEventListener('resize',drawMap);
+drawMap();
 
 renderPath();
 renderSet(CC.cases,'#case-list','病例');

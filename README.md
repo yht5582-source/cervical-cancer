@@ -1,6 +1,6 @@
 # 子宮頸癌｜臨床決策教學
 
-FIGO 2018 分期、診斷與治療方向的繁體中文互動教學網站。包含情境分流、六個示範病例、基礎與進階各十題考題、台灣健保給付檢核及原始指引連結。
+FIGO 2018 分期、診斷與治療方向的繁體中文互動教學網站。包含情境分流、八個完整示範病例與六個快問快答病例、診斷與治療心智圖、基礎與進階各十題考題、台灣健保給付檢核及原始指引連結。
 
 網站：https://yht5582-source.github.io/cervical-cancer/
 
@@ -17,12 +17,12 @@ FIGO 2018 分期、診斷與治療方向的繁體中文互動教學網站。包�
 - [健保署 藥品給付規定 第九節 抗癌瘤藥物（115.9.22）](https://www.nhi.gov.tw/ch/cp-7593-ad2a9-3397-1.html)
 - [FDA tisotumab vedotin](https://www.fda.gov/drugs/resources-information-approved-drugs/fda-approves-tisotumab-vedotin-tftv-recurrent-or-metastatic-cervical-cancer)
 
-資料核對日期：2026-10-31。
+資料核對日期：2026-11-01。
 
 ## 結構與測試
 
-- `clinical.js`：分流引擎 `CC.pathway()`、健保檢核 `CC.nhi()` 與病例／考題題庫（純函式，classic script，file:// 可用）
-- `app.js`：畫面互動（快速情境、分期階梯帶入、即時更新、複製摘要、選項隨機、計分與進度）
+- `clinical.js`：分流引擎 `CC.pathway()`、健保檢核 `CC.nhi()` 與病例／考題題庫（`CC.demoCases` 在 `/*CASES-START*/`、`CC.mindMap` 在 `/*MAP-START*/`，純函式，classic script，file:// 可用）
+- `app.js`：畫面互動（快速情境、分期階梯帶入、即時更新、複製摘要、示範病例、心智圖、選項隨機、計分與進度）
 - `style.css`：色彩變數，支援深色模式與手機版
 - 測試：`node --test tests/clinical.test.cjs`
 

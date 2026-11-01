@@ -139,3 +139,56 @@ footer{background:var(--navy);color:#fff;padding:30px 6vw;display:flex;justify-c
 @media(max-width:900px){.nhi-grid{grid-template-columns:1fr}.nhi form{position:static}.ladder-axis{display:none}}
 @media(max-width:560px){.nhi-row{padding:12px 14px}.nhi-row .clause{margin-left:0;width:100%}}
 .quiz-mode{margin:18px 0 4px}
+.sub-title{font-size:20px;margin:48px 0 0;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}.sub-title small{font-size:13px;color:var(--muted);font-weight:500}
+
+.demo{display:grid;grid-template-columns:280px minmax(0,1fr);gap:16px;margin-top:28px;align-items:start}
+.demo-tabs{display:grid;gap:6px;position:sticky;top:80px}
+.demo-tabs button{display:grid;grid-template-columns:62px 1fr;gap:10px;align-items:center;text-align:left;background:var(--surface);color:var(--ink);border:1px solid var(--line);padding:10px 12px;font-weight:600;font-size:14px;line-height:1.4}
+.demo-tabs button:hover{background:var(--chip)}
+.demo-tabs button b{color:var(--rust);font-size:13px}
+.demo-tabs button[aria-selected=true]{background:var(--chip-on);color:var(--chip-on-ink);border-color:var(--chip-on)}
+.demo-tabs button[aria-selected=true] b{color:inherit}
+.demo-panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:clamp(20px,3vw,32px);box-shadow:var(--shadow);line-height:1.75;min-width:0}
+.demo-panel>small{font-weight:800;color:var(--rust-soft);letter-spacing:.1em}.demo-panel h3{font-size:clamp(20px,2vw,26px);margin:8px 0 12px;line-height:1.35}
+.demo-stem{background:var(--sand);border-radius:10px;padding:14px 18px;margin-bottom:20px}
+.demo-steps{list-style:none;counter-reset:step;padding:0;margin:0 0 20px}
+.demo-steps li{counter-increment:step;position:relative;padding:0 0 16px 44px}
+.demo-steps li::before{content:counter(step);position:absolute;left:0;top:0;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--navy-2);color:#fff;font-weight:800;font-size:14px}
+.demo-steps li::after{content:"";position:absolute;left:14px;top:32px;bottom:2px;width:2px;background:var(--line)}.demo-steps li:last-child::after{display:none}
+.demo-steps b{display:block}.demo-steps p{margin:2px 0 0;color:var(--muted)}
+cite{font-style:normal;font-size:12px;font-weight:700;color:var(--rust);white-space:nowrap}
+.demo-label{font-weight:800;font-size:14px;margin:18px 0 8px}
+.demo-engine{border-left:5px solid var(--tone,#e7b080);background:var(--bg);border-radius:0 10px 10px 0;padding:4px 18px 8px;font-size:14px}
+.demo-engine.tone-early{--tone:#8ccfb6}.demo-engine.tone-advanced{--tone:#e7b080}.demo-engine.tone-meta{--tone:#e98f78}.demo-engine.tone-special{--tone:#b9a6e8}
+.demo-engine .demo-label{margin-top:10px}.demo-engine ul{margin:0;padding-left:20px}.demo-warn{margin:8px 0 0;font-weight:600}
+.demo-note{background:var(--sand);border-left:3px solid var(--rust-soft);padding:10px 14px;border-radius:0 8px 8px 0;font-size:14px}
+.demo-traps{margin:0;padding-left:20px;font-size:14px}
+.demo-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}.demo-actions button{padding:9px 16px;font-size:14px}
+
+.map{background:var(--sage);max-width:none}
+.mm-tools{display:flex;gap:8px;margin:20px 0}.mm-tools button{padding:8px 14px;font-size:14px}
+.mm{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 112px minmax(0,1fr);column-gap:40px;align-items:start}
+#mm-links{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+#mm-links path{fill:none;stroke-width:2;opacity:.55}#mm-links .dx{stroke:var(--navy-2)}#mm-links .tx{stroke:var(--rust-soft)}
+@media (prefers-color-scheme:dark){#mm-links .dx{stroke:var(--peach)}}
+.mm-side{position:relative;min-width:0}
+.mm-center{position:relative;align-self:center;background:var(--navy);color:#fff;border-radius:14px;padding:18px 8px;text-align:center;font-weight:900;font-size:18px;line-height:1.3}
+.mm-center small{display:block;margin-top:6px;font-size:11px;font-weight:600;color:var(--peach-2)}
+.mm-col{font-size:17px;margin:0 0 10px}.mm-col.dx{color:var(--navy-2)}.mm-col.tx{color:var(--rust)}
+@media (prefers-color-scheme:dark){.mm-col.dx{color:var(--peach)}.mm-col.tx{color:var(--no)}}
+.mm-branch{margin-bottom:10px}
+.mm-head{display:block;width:100%;text-align:left;background:var(--surface);color:var(--ink);border:1px solid var(--line);padding:10px 34px 10px 14px;position:relative;line-height:1.4}
+.mm-head:hover{background:var(--chip)}
+.mm-branch.dx .mm-head{border-right:4px solid var(--navy-2)}.mm-branch.tx .mm-head{border-left:4px solid var(--rust-soft)}
+@media (prefers-color-scheme:dark){.mm-branch.dx .mm-head{border-right-color:var(--peach)}}
+.mm-head::after{content:"+";position:absolute;right:13px;top:50%;transform:translateY(-50%);font-size:18px;color:var(--muted)}.mm-head[aria-expanded=true]::after{content:"−"}
+.mm-head[aria-expanded=true]{border-radius:8px 8px 0 0}
+.mm-t{display:block;font-size:15px;font-weight:800}.mm-s{display:block;font-size:12px;font-weight:500;color:var(--muted)}
+.mm-leaves{list-style:none;margin:0;padding:8px 14px;background:var(--surface);border:1px solid var(--line);border-top:0;border-radius:0 0 8px 8px;font-size:13.5px;line-height:1.6}
+.mm-leaves li{padding:5px 0;border-bottom:1px dashed var(--line)}.mm-leaves li:last-child{border-bottom:0}
+.mm-tw{display:inline-block;font-size:11px;font-weight:800;padding:1px 7px;border-radius:999px;background:var(--ok-bg);color:var(--ok);white-space:nowrap}
+.mm-go{background:var(--chip);color:var(--ink);padding:1px 8px;border-radius:999px;font-size:12px;font-weight:700;box-shadow:inset 0 0 0 1px var(--line)}.mm-go:hover{background:var(--peach);color:#162c36}
+@media(max-width:900px){.demo{grid-template-columns:1fr}.demo-tabs{position:static;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}.mm{grid-template-columns:minmax(0,1fr);row-gap:14px}#mm-links{display:none}.mm-center{order:-1;padding:12px}.mm-center small br{display:none}}
+@media(max-width:560px){.demo-tabs{grid-template-columns:1fr}}
+@media print{.demo-tabs,.demo-actions,.mm-tools,.mm-go,#mm-links{display:none}}
+@media (prefers-color-scheme:dark){cite,.demo-tabs button b{color:var(--no)}.demo-tabs button[aria-selected=true] b{color:inherit}}
